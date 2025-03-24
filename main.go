@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
 
 	gnet "github.com/panjf2000/gnet/v2"
@@ -38,4 +40,21 @@ func (es *echoServer) OnTraffic(c gnet.Conn) gnet.Action {
 	buf, _ := c.Next(-1)
 	c.Write(buf)
 	return gnet.None
+}
+
+func main() {
+	var port int
+	var multicore bool
+
+	// Example command: go run echo.go --port 9000 --multicore=true
+	flag.IntVar(&port, "port", 9000, "--port 9000")
+	flag.BoolVar(&multicore, "multicore", false, "--multicore true")
+	flag.Parse()
+
+	echo := &echoServer{
+		addr:      fmt.Sprintf("tcp://:%d", port),
+		multicore: multicore,
+	}
+
+	log.Fatal(gnet.Run(echo, echo.addr, gnet.WithMulticore(multicore)))
 }
