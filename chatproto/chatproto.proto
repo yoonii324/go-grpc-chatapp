@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+// package name
+option go_package = "grpcchat/chatproto";
+
+package chatproto;
+
+// definition of service including chat() function
+service ChatService {
+  rpc Chat(stream ChatMsg) returns (stream ChatMsg) {}
+}
+
+// definition of struct used in Chat function
+message ChatMsg {
+  string sender = 1;
+  string message = 2;
+}
